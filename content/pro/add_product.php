@@ -1,46 +1,44 @@
 <?php
-$instructorId = isset($_GET['edit']) ? $_GET['edit'] : '';
+$pId = isset($_GET['edit']) ? $_GET['edit'] : '';
+
+$queryCP = mysqli_query($config, "SELECT * FROM categories");
+$rowCP = mysqli_fetch_all($queryCP, MYSQLI_ASSOC);
+
 if (isset($_POST['save'])) {
-    //ada tidak parameter bernama edit, kalau ada jalankan perintah edit, jika tidak maka akan menyimpan baru
-    $idRole = 1;
-    $instName = $_POST['instructor_name'];
-    $instGender = $_POST['instructor_gender'];
-    $instEd = $_POST['instructor_education'];
-    $instPhone = $_POST['instructor_phone'];
-    $instEmail = $_POST['instructor_email'];
-    $instPassword = sha1($_POST['instructor_password']);
-    $instAddr = $_POST['instructor_address'];
-    $instructorId = isset($_GET['edit']) ? $_GET['edit'] : '';
-    $queryInsert = mysqli_query($config, "INSERT INTO instructors (id_role, instructor_name, instructor_gender, instructor_education, instructor_phone, instructor_email, instructor_password instructor_address) VALUES ('$idRole', '$instName','$instGender', '$instEd', '$instPhone', '$instEmail', '$instPassword' '$instAddr')");
-    header("location:?page=/instruct/instructor&add=success");
+
+    $idCat = $_POST['id_category'];
+    $pName = $_POST['p_name'];
+    $pPrice = $_POST['p_price'];
+    $pQty = $_POST['p_qty'];
+    $pDesc = $_POST['p_desc'];
+    $pId = isset($_GET['edit']) ? $_GET['edit'] : '';
+    $queryInsert = mysqli_query($config, "INSERT INTO products (id_category, p_name, p_price, p_qty, p_desc) VALUES ('$idCat', '$pName','$pPrice', '$pQty', '$pDesc')");
+    header("location:?page=/pro/products&add=success");
 }
 if (isset($_GET['edit'])) {
-    $queryEdit = mysqli_query($config, "SELECT * FROM instructors WHERE instructor_id = $instructorId");
+    $queryEdit = mysqli_query($config, "SELECT * FROM products WHERE p_id = $pId");
     $rowEdit = mysqli_fetch_assoc($queryEdit);
 }
 
 if (isset($_POST['edit'])) {
-    $idRole = 1;
-    $instName = $_POST['instructor_name'];
-    $instGender = $_POST['instructor_gender'];
-    $instEd = $_POST['instructor_education'];
-    $instPhone = $_POST['instructor_phone'];
-    $instEmail = $_POST['instructor_email'];
-    $instPassword = isset($_POST['instructor_password']) ? sha1($_POST['instructor_password']) : $rowEdit['instructor_password'];
-    $instAddr = $_POST['instructor_address'];
-    $queryUpdate = mysqli_query($config, "UPDATE instructors SET id_role='$idRole', instructor_name='$instName', instructor_gender='$instGender', instructor_education='$instEd', instructor_phone='$instPhone', instructor_email='$instEmail', instructor_password='$instPassword', instructor_address='$instAddr' WHERE instructor_id = $instructorId");
-    header("location:?page=/instruct/instructor&update=success");
+    $pCat = $_POST['id_category'];
+    $pName = $_POST['p_name'];
+    $pPrice = $_POST['p_price'];
+    $pQty = $_POST['p_qty'];
+    $pDesc = $_POST['p_desc'];
+    $queryUpdate = mysqli_query($config, "UPDATE products SET id_category='$idCat', p_name='$pName', p_price='$pPrice', p_qty='$pQty', p_desc='$pDesc' WHERE p_id = $pId");
+    header("location:?page=/pro/products&update=success");
 }
 
 
 
 if (isset($_GET['delete'])) {
-    $instructor_id = isset($_GET['delete']) ? $_GET['delete'] : '';
-    $queryDelete = mysqli_query($config, "UPDATE instructors SET deleted_at = 1 WHERE instructor_id = '$instructor_id'");
+    $p_id = isset($_GET['delete']) ? $_GET['delete'] : '';
+    $queryDelete = mysqli_query($config, "DELETE FROM products WHERE p_id = '$p_id'");
     if ($queryDelete) {
-        header("location:?page=/instruct/instructor&delete=success");
+        header("location:?page=/pro/products&delete=success");
     } else {
-        header("location:?page=/instruct/instructor&delete=failed");
+        header("location:?page=/pro/products&delete=failed");
     }
 }
 ?>
@@ -49,65 +47,52 @@ if (isset($_GET['delete'])) {
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><?= isset($_GET['edit']) ? 'Edit' : 'Add' ?> Instructor</h5>
+                <h5 class="card-title"><?= isset($_GET['edit']) ? 'Edit' : 'Add' ?> Product</h5>
                 <form action="" method="post">
-                    <div class="mb-3">
-                        <label for="" class="form-label">Instructor Name *</label>
-                        <input type="text" class="form-control" name="instructor_name" placeholder="Enter your Name"
-                            value="<?= isset($_GET['edit']) ? $rowEdit['instructor_name'] : '' ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="" class="form-label">Instructor Gender *</label>
-                        <div>
 
-                            <div class="mb-3">
-                                <input type="radio" name="instructor_gender" value="1"
-                                    <?= (isset($_GET['edit']) && $rowEdit['instructor_gender'] == '1') ? 'checked' : '' ?>
-                                    required> Laki-Laki
-                                <input type="radio" name="instructor_gender" value="0"
-                                    <?= (isset($_GET['edit']) && $rowEdit['instructor_gender'] == '0') ? 'checked' : '' ?>
-                                    required> Perempuan
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Instructor Education *</label>
-                                <input type="text" class="form-control" name="instructor_education"
-                                    placeholder="Enter your Name"
-                                    value="<?= isset($_GET['edit']) ? $rowEdit['instructor_education'] : '' ?>"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Instructor Phone *</label>
-                                <input type="text" class="form-control" name="instructor_phone"
-                                    placeholder="Enter your Name"
-                                    value="<?= isset($_GET['edit']) ? $rowEdit['instructor_phone'] : '' ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Email *</label>
-                                <input type="email" class="form-control" name="instructor_email"
-                                    placeholder="Enter your Email"
-                                    value="<?= isset($_GET['edit']) ? $rowEdit['instructor_email'] : '' ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Password *</label>
-                                <input type="password" class="form-control" name="instructor_password"
-                                    placeholder="Enter your Password" <?= empty($instructorId) ? 'required' : ''; ?>>
-                                <?php if (isset($_GET['edit'])) : ?>
-                                    <small>
-                                        You can change your password by filling the above field
-                                    </small>
-                                <?php endif ?>
-                            </div>
-                            <div class="mb-3">
-                                <label for="" class="form-label">Address *</label>
-                                <input type="text" class="form-control" name="instructor_address"
-                                    placeholder="Enter your Email"
-                                    value="<?= isset($_GET['edit']) ? $rowEdit['instructor_address'] : '' ?>" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="submit" class="btn btn-success"
-                                    name="<?= isset($instructorId) && $instructorId != '' ? 'edit' : 'save'; ?>"
-                                    value="<?= isset($instructorId) && $instructorId != '' ? 'Update' : 'Save'; ?>">
-                            </div>
+                    <div class="mb-3">
+                        <label for="" class="form-label">Product Category *</label>
+                        <select name="id_category" id="" class="form-control">
+                            <option value="">Select one</option>
+                            <?php foreach ($rowCP as $c): ?>
+                                <option
+                                    <?= isset($rowEdit) ? ($c['c_id'] == $rowEdit['id_category']) ? 'selected' : '' : '' ?>
+                                    value="<?= $c['c_id'] ?>">
+                                    <?= $c['c_name']  ?></option>
+                            <?php endforeach ?>
+
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Product Name *</label>
+                        <input type="text" class="form-control" name="p_name" placeholder="Enter product's category"
+                            value="<?= isset($_GET['edit']) ? $rowEdit['p_name'] : '' ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Product Price *</label>
+                        <input type="number" class="form-control" name="p_price" placeholder="Enter product's price"
+                            value="<?= isset($_GET['edit']) ? $rowEdit['p_price'] : '' ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Product Qty *</label>
+                        <input type="number" class="form-control" name="p_qty" placeholder="Enter product's qty"
+                            value="<?= isset($_GET['edit']) ? $rowEdit['p_qty'] : '' ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="" class="form-label">Product Description *</label>
+                        <input type="text" class="form-control" name="p_desc" placeholder="Enter product's description"
+                            value="<?= isset($_GET['edit']) ? $rowEdit['p_desc'] : '' ?>">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="submit" class="btn btn-success"
+                            name="<?= isset($pId) && $pId != '' ? 'edit' : 'save'; ?>"
+                            value="<?= isset($pId) && $pId != '' ? 'Update' : 'Save'; ?>">
+                    </div>
 
                 </form>
             </div>

@@ -26,23 +26,23 @@ $row = mysqli_fetch_all($query, MYSQLI_ASSOC);
                         </thead>
                         <tbody>
                             <?php foreach ($row as $key => $product) : ?>
-                                <tr>
-                                    <td><?= $key += 1 ?></td>
-                                    <td><?= $product['c_name'] ?></td>
-                                    <td><?= $product['p_name'] ?></td>
-                                    <td><?= $product['p_price'] ?></td>
-                                    <td><?= $product['p_qty'] ?></td>
-                                    <td><?= $product['p_desc'] ?></td>
-                                    <td class="d-flex justify-content-center">
-                                        <a href="?page=/pro/add_product_major&id=<?= $product['p_id'] ?>"
-                                            class="btn btn-secondary me-2 ms-2">Add Major</a>
-                                        <a href="?page=/pro/add_product&edit=<?= $product['p_id'] ?>"
-                                            class="btn btn-primary me-2 ms-2">Edit</a>
-                                        <a onclick="return confirm('Are you Sure want to delete this data??')"
-                                            href="?page=pro/add_product&delete=<?= $product['p_id'] ?>"
-                                            class="btn btn-danger me-2 ms-2">Delete</a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td><?= $key += 1 ?></td>
+                                <td><?= $product['c_name'] ?></td>
+                                <td><?= $product['p_name'] ?></td>
+                                <td><?= $product['p_price'] ?></td>
+                                <td><?= $product['p_qty'] ?></td>
+                                <td><?= $product['p_desc'] ?></td>
+                                <td class="d-flex justify-content-center">
+                                    <!-- <a href="?page=/pro/add_product_major&id=<?= $product['p_id'] ?>"
+                                            class="btn btn-secondary me-2 ms-2">Add Major</a> -->
+                                    <a href="?page=/pro/add_product&edit=<?= $product['p_id'] ?>"
+                                        class="btn btn-primary me-2 ms-2">Edit</a>
+                                    <a onclick="return confirm('Are you Sure want to delete this data??')"
+                                        href="?page=pro/add_product&delete=<?= $product['p_id'] ?>"
+                                        class="btn btn-danger me-2 ms-2">Delete</a>
+                                </td>
+                            </tr>
                             <?php endforeach ?>
                         </tbody>
                     </table>

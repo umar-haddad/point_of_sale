@@ -37,46 +37,132 @@ if (isset($_GET['delete'])) {
         header("location:?page=/usr/user&delete=failed");
     }
 }
+
+$id_user = isset($_GET['add-user-role']) ? $_GET['add-user-role'] : '';
+$queryRoles = mysqli_query($config, "SELECT * FROM roles ORDER BY role_id Desc");
+$rowRoles = mysqli_fetch_all($queryRoles, MYSQLI_ASSOC);
+
+$queryUserRoles = mysqli_query($config, "SELECT user_roles.*, roles.role_name FROM user_roles
+                                                                                                        LEFT JOIN roles ON user_roles.id_role = roles.role_id
+                                                                                                        WHERE id_user = '$id_user'
+                                                                                                        ORDER BY user_roles.uR_id DESC");
+$rowUserRoles = mysqli_fetch_all($queryUserRoles, MYSQLI_ASSOC);
+// print_r($rowUserRoles);
+// die;
+if (isset($_POST['id_role'])) {
+    $id_role = $_POST['id_role'];
+    $queryInsert = mysqli_query($config, "INSERT INTO user_roles (id_role, id_user) VALUES ('$id_role', '$id_user')");
+    header("location:?page=/usr/user&add-user-role=" . $id_user . "&add-role=success");
+}
 ?>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title"><?= isset($_GET['edit']) ? 'Edit' : 'Add' ?> User</h5>
-                <form action="" method="post">
+                <?php if (isset($_GET['add-user-role'])):
+                    $title = "Add User Role: ";
+                elseif (isset($_GET['edit'])):
+                    $title = "Edit User: ";
+                else:
+                    $title = "Add User: ";
+                endif ?>
+                <h5 class="card-title"><?= $title . $_name ?></h5>
+                <?php if (isset($_GET['add-user-role'])): ?>
+                    <div align="right" class="mb-3">
+                        <button class="btn btn-primary" type="submit" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Add Role
+                        </button>
 
-                    <div class="mb-3">
-                        <label for="" class="form-label">Full Name *</label>
-                        <input type="text" class="form-control" name="user_name" placeholder="Enter your Name"
-                            value="<?= isset($_GET['edit']) ? $rowEdit['user_name'] : '' ?>" required>
                     </div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Number</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($rowUserRoles as $index => $uR): ?>
+                                <tr>
+                                    <td><?= $index += 1 ?></td>
+                                    <td><?= $uR['role_name'] ?></td>
+                                    <td>
+                                        <a href="?page=/usr/add_user&edit=<?= $uR['uR_id'] ?>"
+                                            class="btn btn-primary me-2 ms-2">Edit</a>
+                                        <a href="?page=/usr/add_user&delete=<?= $user['uR_id'] ?>"
+                                            class="btn btn-danger me-2 ms-2">Delete</a>
+                                    </td>
+                                </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <form action="" method="post">
 
-                    <div class="mb-3">
-                        <label for="" class="form-label">Email *</label>
-                        <input type="email" class="form-control" name="user_email" placeholder="Enter your Email"
-                            value="<?= isset($_GET['edit']) ? $rowEdit['user_email'] : '' ?>" required>
-                    </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Full Name *</label>
+                            <input type="text" class="form-control" name="user_name" placeholder="Enter your Name"
+                                value="<?= isset($_GET['edit']) ? $rowEdit['user_name'] : '' ?>" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <label for="" class="form-label">Password *</label>
-                        <input type="password" class="form-control" name="user_password"
-                            placeholder="Enter your Password" <?= empty($userId) ? 'required' : ''; ?>>
-                        <?php if (isset($_GET['edit'])) : ?>
-                            <small>
-                                You can change your password by filling the above field
-                            </small>
-                        <?php endif ?>
-                    </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Email *</label>
+                            <input type="email" class="form-control" name="user_email" placeholder="Enter your Email"
+                                value="<?= isset($_GET['edit']) ? $rowEdit['user_email'] : '' ?>" required>
+                        </div>
 
-                    <div class="mb-3">
-                        <input type="submit" class="btn btn-success"
-                            name="<?= isset($userId) && $userId != '' ? 'edit' : 'save'; ?>"
-                            value="<?= isset($userId) && $userId != '' ? 'Update' : 'Save'; ?>">
-                    </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Password *</label>
+                            <input type="password" class="form-control" name="user_password"
+                                placeholder="Enter your Password" <?= empty($userId) ? 'required' : ''; ?>>
+                            <?php if (isset($_GET['edit'])) : ?>
+                                <small>
+                                    You can change your password by filling the above field
+                                </small>
+                            <?php endif ?>
+                        </div>
 
-                </form>
+                        <div class="mb-3">
+                            <input type="submit" class="btn btn-success"
+                                name="<?= isset($userId) && $userId != '' ? 'edit' : 'save'; ?>"
+                                value="<?= isset($userId) && $userId != '' ? 'Update' : 'Save'; ?>">
+                        </div>
+
+                    </form>
+                <?php endif ?>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Role</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="" class="form-label">Role Name</label>
+                        <select name="id_role" id="" class="form-control">
+                            <option value="">Select One</option>
+                            <?php foreach ($rowRoles as $rowRole): ?>
+                                <option value="<?= $rowRole['role_id'] ?>"><?= $rowRole['role_name'] ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modaldivoter m-3" align="right">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" name="add-user-role" class="btn btn-primary">Save
+                        changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
