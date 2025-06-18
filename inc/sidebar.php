@@ -1,9 +1,9 @@
 <?php
-$_roles = isset($_SESSION['ID_ROLE']) ? $_SESSION['ID_ROLE'] : '';
+$_id = isset($_SESSION['ID_USER']) ? $_SESSION['ID_USER'] : '';
 $queryMainMenu = mysqli_query($config, "SELECT DISTINCT menus.* FROM menus 
                                                                 JOIN menu_roles ON menus.menu_id = menu_roles.id_menu
-                                                                JOIN roles ON roles.role_id = menu_roles.id_role
-                                                                WHERE menu_roles.id_role = '$_roles' 
+                                                                JOIN user_roles ON user_roles.id_role = menu_roles.id_role
+                                                                WHERE user_roles.id_user = '$_id' 
                                                                 AND (parent_id=0 OR parent_id='')
                                                                 ORDER BY menu_order ASC");
 $rowMainMenu = mysqli_fetch_all($queryMainMenu, MYSQLI_ASSOC);
@@ -27,8 +27,8 @@ $rowMainMenu = mysqli_fetch_all($queryMainMenu, MYSQLI_ASSOC);
             // die;
             $querySubMenu = mysqli_query($config, "SELECT DISTINCT menus.* FROM menus 
                                                                             JOIN menu_roles ON menus.menu_id = menu_roles.id_menu
-                                                                            JOIN roles ON roles.role_id = menu_roles.id_role
-                                                                            WHERE menu_roles.id_role = '$_roles' 
+                                                                            JOIN user_roles ON user_roles.id_role = menu_roles.id_role
+                                                                            WHERE user_roles.id_user = '$_id' 
                                                                             AND (parent_id='$idMenu') 
                                                                             ORDER BY menu_order ASC");
             // $row = mysqli_fetch_all($querySubMenu, MYSQLI_ASSOC);
