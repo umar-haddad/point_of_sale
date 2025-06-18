@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 16, 2025 at 09:58 AM
+-- Generation Time: Jun 18, 2025 at 04:18 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -59,6 +59,21 @@ CREATE TABLE `menus` (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `menus`
+--
+
+INSERT INTO `menus` (`menu_id`, `parent_id`, `menu_name`, `menu_icon`, `menu_url`, `menu_order`, `created_at`, `updated_at`) VALUES
+(1, 0, 'Dashboard', 'bi bi-grid', 'home.php', 1, '2025-06-11 05:12:51', '2025-06-12 00:24:06'),
+(2, 0, 'Master Data', 'bi bi-menu-button-wide', '', 2, '2025-06-11 04:41:34', '2025-06-12 00:24:04'),
+(7, 2, 'Instructor', 'bi bi-circle', 'instruct/instructor', 1, '2025-06-11 06:49:48', '2025-06-12 00:24:32'),
+(8, 2, 'Major', 'bi bi-circle', 'maj/major', 2, '2025-06-11 07:17:52', '2025-06-12 00:24:35'),
+(9, 2, 'Menu', 'bi bi-circle', 'mnu/menu', 3, '2025-06-11 07:32:51', '2025-06-12 00:24:38'),
+(10, 2, 'Role', 'bi bi-circle', 'rol/role', 4, '2025-06-11 07:33:24', '2025-06-12 00:24:40'),
+(11, 2, 'User', 'bi bi-circle', 'usr/user', 5, '2025-06-11 07:34:25', '2025-06-12 00:24:43'),
+(12, 0, 'Moduls', 'bi bi-book', '?page=/mod/moduls', 3, '2025-06-12 02:33:42', '2025-06-12 05:13:23'),
+(13, 12, 'POS', 'bi bi-circle', 'pos', 1, '2025-06-18 02:13:44', '2025-06-18 02:13:52');
+
 -- --------------------------------------------------------
 
 --
@@ -72,6 +87,21 @@ CREATE TABLE `menu_roles` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `menu_roles`
+--
+
+INSERT INTO `menu_roles` (`mr_id`, `id_role`, `id_menu`, `created_at`, `updated_at`) VALUES
+(25, 1, 1, '2025-06-18 02:14:30', NULL),
+(26, 1, 2, '2025-06-18 02:14:30', NULL),
+(27, 1, 7, '2025-06-18 02:14:30', NULL),
+(28, 1, 8, '2025-06-18 02:14:30', NULL),
+(29, 1, 9, '2025-06-18 02:14:30', NULL),
+(30, 1, 10, '2025-06-18 02:14:30', NULL),
+(31, 1, 11, '2025-06-18 02:14:30', NULL),
+(32, 1, 12, '2025-06-18 02:14:30', NULL),
+(33, 1, 13, '2025-06-18 02:14:30', NULL);
 
 -- --------------------------------------------------------
 
@@ -127,6 +157,7 @@ INSERT INTO `roles` (`role_id`, `role_name`, `created_at`, `updated_at`) VALUES
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
+  `id_role` int(11) DEFAULT NULL,
   `user_name` varchar(50) NOT NULL,
   `user_email` varchar(50) NOT NULL,
   `user_password` varchar(100) NOT NULL,
@@ -139,11 +170,11 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `user_name`, `user_email`, `user_password`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 'W', 'w@gmail.com', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2025-06-16 01:46:54', NULL, 0),
-(2, 'Ted', 'ted@gmail.com', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2025-06-16 07:44:39', NULL, 0),
-(3, '', '', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2025-06-16 07:44:46', '2025-06-16 07:44:54', 1),
-(4, '', '', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2025-06-16 07:46:29', '2025-06-16 07:46:35', 1);
+INSERT INTO `users` (`user_id`, `id_role`, `user_name`, `user_email`, `user_password`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, NULL, 'W', 'w@gmail.com', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2025-06-16 01:46:54', NULL, 0),
+(2, NULL, 'Ted', 'ted@gmail.com', '40bd001563085fc35165329ea1ff5c5ecbdbbeef', '2025-06-16 07:44:39', NULL, 0),
+(3, NULL, '', '', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2025-06-16 07:44:46', '2025-06-16 07:44:54', 1),
+(4, NULL, '', '', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', '2025-06-16 07:46:29', '2025-06-16 07:46:35', 1);
 
 -- --------------------------------------------------------
 
@@ -229,13 +260,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `menu_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `menu_roles`
 --
 ALTER TABLE `menu_roles`
-  MODIFY `mr_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `mr_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `products`
